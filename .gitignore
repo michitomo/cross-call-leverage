@@ -1,0 +1,4 @@
+# Data files (regenerable by running scripts)
+data/raw/
+data/processed/
+data/scored/
