@@ -66,7 +66,7 @@
 - **APIレート制限**: 国会会議録APIに過度な負荷をかけない。リクエスト間に1秒以上のsleep
 - **LLMコスト管理**: スコアリング前に対象答弁数を確認し、概算コストを出力すること
 - **スコープ厳守**: まず厚労委のPoCで結果を出す。他委員会への拡張は明示的に指示があるまでしない
-- **ネットワーク制限**: `*.go.jp` へのアクセスは可能。LLMは DeepInfra API を使用（環境変数 `DEEPINFRA_API_KEY` 設定済み）。OpenAI互換エンドポイント `https://api.deepinfra.com/v1/openai/chat/completions` を使用。モデルは `meta-llama/Llama-3.3-70B-Instruct` 等コスト効率の良いものを選択。
+- **ネットワーク制限**: `*.go.jp` へのアクセスは可能。LLMは DeepInfra API を使用（環境変数 `DEEPINFRA_API_KEY` 設定済み）。OpenAI互換エンドポイント `https://api.deepinfra.com/v1/openai/chat/completions` を使用。モデルは `google/gemma-4-31B-it` を選択。
 - **中間成果物の保存**: 各Phaseの出力は `data/` 配下に保存し、再実行可能にする
 - **進捗報告**: 各Phase完了時に発見事項のサマリーを出力
 
