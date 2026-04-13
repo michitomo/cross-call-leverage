@@ -1,0 +1,7 @@
+# Data files (regenerable by running scripts)
+data/raw/
+data/processed/
+data/scored/
+
+# Large generated JSON (regenerable by running analyze.py)
+output/analysis_results.json

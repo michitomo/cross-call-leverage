@@ -259,27 +259,36 @@ def print_analysis(result: dict):
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    # 厚労委データ
-    scored = load_csv(os.path.join(DATA_SCORED_DIR, "scored_speeches.csv"))
-    tagged = load_csv(os.path.join(DATA_SCORED_DIR, "tagged_speeches.csv"))
+    COMMITTEES = [
+        ("厚生労働委員会", "厚生労働", ""),
+        ("総務委員会", "総務", "_総務"),
+        ("内閣委員会", "内閣", "_内閣"),
+        ("経済産業委員会", "経済産業", "_経済産業"),
+        ("国土交通委員会", "国土交通", "_国土交通"),
+    ]
 
     results = {}
+    all_merged = []  # for cross-committee analysis
 
-    if scored:
+    for name, _prefix, suffix in COMMITTEES:
+        scored = load_csv(os.path.join(DATA_SCORED_DIR, f"scored_speeches{suffix}.csv"))
+        tagged = load_csv(os.path.join(DATA_SCORED_DIR, f"tagged_speeches{suffix}.csv"))
+
+        if not scored:
+            print(f"\n{name}: no scored data, skipping")
+            continue
+
         merged = merge_score_and_tags(scored, tagged)
-        analysis = analyze_committee(merged, "厚生労働委員会")
+        analysis = analyze_committee(merged, name)
         print_analysis(analysis)
-        results["厚生労働委員会"] = analysis
+        results[name] = analysis
+        all_merged.extend(merged)
 
-    # 総務委データ
-    scored_soumu = load_csv(os.path.join(DATA_SCORED_DIR, "scored_speeches_総務.csv"))
-    tagged_soumu = load_csv(os.path.join(DATA_SCORED_DIR, "tagged_speeches_総務.csv"))
-
-    if scored_soumu:
-        merged_soumu = merge_score_and_tags(scored_soumu, tagged_soumu)
-        analysis_soumu = analyze_committee(merged_soumu, "総務委員会")
-        print_analysis(analysis_soumu)
-        results["総務委員会"] = analysis_soumu
+    # Cross-committee aggregate
+    if all_merged:
+        agg = analyze_committee(all_merged, "全委員会合計")
+        print_analysis(agg)
+        results["全委員会合計"] = agg
 
     # JSON出力
     analysis_path = os.path.join(OUTPUT_DIR, "analysis_results.json")
